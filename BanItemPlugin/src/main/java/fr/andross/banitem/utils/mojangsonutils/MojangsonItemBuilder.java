@@ -154,7 +154,6 @@ public class MojangsonItemBuilder {
     }
 
     public final NBTCompound getItemCompound() {
-        System.out.println(itemCompound);
         return itemCompound;
     }
 
