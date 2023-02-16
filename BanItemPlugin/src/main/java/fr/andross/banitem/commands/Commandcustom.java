@@ -24,6 +24,11 @@ public class Commandcustom extends BanCommand{
 
     @Override
     public void run() {
+        if (!sender.hasPermission("banitem.command.custom")) {
+            message(getNoPermMessage());
+            return;
+        }
+
         if (!(sender instanceof Player)) { sendNonPlayerErr(); return; }
         Player p = ((Player) sender);
         ItemStack item = p.getInventory().getItemInMainHand();

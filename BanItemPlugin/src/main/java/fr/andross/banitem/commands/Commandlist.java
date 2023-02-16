@@ -44,6 +44,11 @@ public class Commandlist extends BanCommand{
 
     @Override
     public void run() {
+        if (!sender.hasPermission("banitem.command.list")) {
+            message(getNoPermMessage());
+            return;
+        }
+
         if (args.length >= 2 && args[1].equals("hidden_cmd"))
             sendBannedItemInfo(args[2]);
         else {
