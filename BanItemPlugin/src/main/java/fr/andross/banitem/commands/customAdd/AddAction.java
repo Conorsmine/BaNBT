@@ -114,8 +114,12 @@ public class AddAction {
         banCustomItemBuilder.addCustomBannedItem();
 
         pl.getUtils().sendMessage(p, String.format(" %s", header));
-        // todo:
-        p.sendMessage("Send some completion text here!");
+        pl.getUtils().sendMessage(p, "&aSuccessfully added item config to the custom items.");
+        pl.getUtils().sendMessage(p, "&7Use: &b/bi list&7 to view all custom banned items.");
+        pl.getUtils().sendMessage(p, "&7Any further configuration will need to be done manually");
+        pl.getUtils().sendMessage(p, "&7via the config files.");
+        pl.getUtils().sendMessage(p, "&7If any errors occur or features are missing, notify:");
+        pl.getUtils().sendMessage(p, "&6Conorsmine &7(Discord: &dSCP-999#0701&7)");
         deleteAction();
     }
 
