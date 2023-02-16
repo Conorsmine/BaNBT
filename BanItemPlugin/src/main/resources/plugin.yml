@@ -23,6 +23,7 @@ permissions:
       banitem.command.help: true
       banitem.command.info: true
       banitem.command.load: true
+      banitem.command.list: true
       banitem.command.log: true
       banitem.command.metaitem: true
       banitem.command.reload: true

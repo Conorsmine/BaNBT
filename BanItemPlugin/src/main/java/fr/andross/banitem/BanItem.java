@@ -137,6 +137,7 @@ public final class BanItem extends JavaPlugin {
                 banCommand.run();
                 return true;
             } catch (final Exception ignored) {
+                ignored.printStackTrace();
                 // We do not care!
             }
 
@@ -155,6 +156,7 @@ public final class BanItem extends JavaPlugin {
             utils.sendMessage(sender, " &7- /bi &3check&7: check if any player has a blacklisted item.");
             utils.sendMessage(sender, " &7- /bi &3help&7: gives additional informations.");
             utils.sendMessage(sender, " &7- /bi &3info&7: get info about your item in hand.");
+            utils.sendMessage(sender, " &7- /bi &3list&7: lists all custom item.");
             utils.sendMessage(sender, " &7- /bi &3load&7: load a specific config file.");
             utils.sendMessage(sender, " &7- /bi &3log&7: activate the log mode.");
             utils.sendMessage(sender, " &7- /bi &3metaitem&7: add/remove/list meta items.");

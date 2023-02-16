@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import fr.andross.banitem.BanItem;
 import fr.andross.banitem.actions.BanAction;
 import fr.andross.banitem.items.CustomBannedItem;
-import fr.andross.banitem.utils.MojangsonUtils;
+import fr.andross.banitem.utils.mojangsonutils.MojangsonUtils;
 import fr.andross.banitem.utils.debug.Debug;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;

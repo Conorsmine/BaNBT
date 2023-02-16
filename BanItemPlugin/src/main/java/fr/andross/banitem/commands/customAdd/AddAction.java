@@ -4,7 +4,7 @@ import de.tr7zw.nbtapi.NBTContainer;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.NBTType;
 import fr.andross.banitem.BanItem;
-import fr.andross.banitem.utils.MojangsonUtils;
+import fr.andross.banitem.utils.mojangsonutils.MojangsonUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -79,7 +79,7 @@ public class AddAction {
         pl.getUtils().sendMessage(p, "&7 >> Note: You can undo a selection by clicking on the path again.");
         pl.getUtils().sendMessage(p, "&7 >> Note: You can only select data which has &aGREEN&7 hovertext.");
         pl.getUtils().sendMessage(p, "&7 >> Note: This process will take up your chat.");
-        pl.getUtils().sendMessage(p, "&7 >> Note: Use &b/bi info &7to get basic info.");
+        pl.getUtils().sendMessage(p, "&7 >> Note: Use &b/bi info &3debug &7to get basic info.");
     }
 
     private void sendNewDataMsg() {

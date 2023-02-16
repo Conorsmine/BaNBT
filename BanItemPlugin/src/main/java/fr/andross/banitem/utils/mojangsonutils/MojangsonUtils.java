@@ -1,4 +1,4 @@
-package fr.andross.banitem.utils;
+package fr.andross.banitem.utils.mojangsonutils;
 
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTCompoundList;
