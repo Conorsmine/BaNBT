@@ -82,19 +82,20 @@ public class Commandlist extends BanCommand{
         boolean isPlayer = (sender instanceof Player);
 
         FileConfiguration customItemConfig = pl.getBanDatabase().getCustomItems().getConfig();
-        final TextComponent itemName = new TextComponent();
-        itemName.setColor(ChatColor.AQUA);
-        for (CustomBannedItem bannedItem : pl.getBanDatabase().getCustomItems().getReversed().keySet()) {
-            final String itemJson = getBannedItemJson(customItemConfig, bannedItem.getName());
+        for (final CustomBannedItem bannedItem : pl.getBanDatabase().getCustomItems().getReversed().keySet()) {
+            final TextComponent itemMessage = new TextComponent();
+            itemMessage.setColor(ChatColor.AQUA);
+            final String itemName = bannedItem.getName();
+            final String itemJson = getBannedItemJson(customItemConfig, itemName);
             if (itemJson == null) continue;
 
             if (isPlayer) {
-                itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new BaseComponent[]{new TextComponent(itemJson)}));
-                itemName.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(CMD_FORMAT, bannedItem.getName())));
+                itemMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new BaseComponent[]{new TextComponent(itemJson)}));
+                itemMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(CMD_FORMAT, itemName)));
             }
 
-            itemName.setText(String.format("%s §7>> §b%s", pl.getBanConfig().getPrefix(), bannedItem.getName()));
-            sender.spigot().sendMessage(itemName);
+            itemMessage.setText(String.format("%s §7>> §b%s", pl.getBanConfig().getPrefix(), itemName));
+            sender.spigot().sendMessage(itemMessage);
         }
     }
 
@@ -138,7 +139,7 @@ public class Commandlist extends BanCommand{
         if (!customItemData.getKeys(false).contains("nbtapi")) return NBTItem.convertItemtoNBT(customItem).toString();
 
         ConfigurationSection nbtApi = customItemData.getConfigurationSection("nbtapi");
-        MojangsonItemBuilder itemBuilder = new MojangsonItemBuilder(customItem);
+        final MojangsonItemBuilder itemBuilder = new MojangsonItemBuilder(customItem);
 
         for (String path : nbtApi.getKeys(false)) {
             Object data = nbtApi.get(path);
