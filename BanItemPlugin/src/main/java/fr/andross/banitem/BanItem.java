@@ -18,6 +18,7 @@
 package fr.andross.banitem;
 
 import fr.andross.banitem.commands.BanCommand;
+import fr.andross.banitem.commands.customAdd.AddAction;
 import fr.andross.banitem.logs.BanLog;
 import fr.andross.banitem.logs.ViolationLog;
 import fr.andross.banitem.utils.Chat;
@@ -122,6 +123,11 @@ public final class BanItem extends JavaPlugin {
         }
 
         if (args.length > 0)
+            if (args[0].equals("hidden_cmd")) {
+                AddAction.processActionCmd(sender, args);
+                return true;
+            }
+
             try {
                 final String subCommandName = args[0].toLowerCase();
                 final String subCommand = utils.getCommandsAliases().getOrDefault(subCommandName, subCommandName);
@@ -145,6 +151,7 @@ public final class BanItem extends JavaPlugin {
         if (sender instanceof Player) {
             utils.sendMessage(sender, "&7&m     &r &l[&7&lUsage - &e&lv" + getDescription().getVersion() + "&r&l] &7&m     ");
             utils.sendMessage(sender, " &7- /bi &3add&7: add an item in blacklist for current world.");
+            utils.sendMessage(sender, " &7- /bi &3custom&7: add a custom item in blacklist for current world.");
             utils.sendMessage(sender, " &7- /bi &3check&7: check if any player has a blacklisted item.");
             utils.sendMessage(sender, " &7- /bi &3help&7: gives additional informations.");
             utils.sendMessage(sender, " &7- /bi &3info&7: get info about your item in hand.");
