@@ -122,7 +122,7 @@ public class AddAction {
 
         pl.getUtils().sendMessage(p, String.format(" %s", header));
         pl.getUtils().sendMessage(p, "&aSuccessfully added item config to the custom items.");
-        pl.getUtils().sendMessage(p, "&7Use: &b/bu reload&7 to update the plugin.");
+        pl.getUtils().sendMessage(p, "&7Use: &b/bi reload&7 to update the plugin.");
         pl.getUtils().sendMessage(p, "&7Use: &b/bi list&7 to view all custom banned items.");
         pl.getUtils().sendMessage(p, "&7Any further configuration will need to be done manually");
         pl.getUtils().sendMessage(p, "&7via the config files.");
