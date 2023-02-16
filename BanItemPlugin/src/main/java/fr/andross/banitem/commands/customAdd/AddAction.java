@@ -10,8 +10,10 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.*;
 
@@ -44,6 +46,7 @@ public class AddAction {
         this.banCustomItemBuilder = new CustomItemBanner(this);
 
         actionMap.put(actionID, this);
+        selfDelete();
 
         if (!actionParser.isBanCurrent())
             initAction();
@@ -103,6 +106,10 @@ public class AddAction {
         pl.getUtils().sendMessage(p, " &7All valid data options have &aGREEN&7 hover text.");
     }
 
+    private static void sendActionExpiredErr(CommandSender sender) {
+        BanItem.getInstance().getUtils().sendMessage(sender, "&cThe action has expired. Please redo this action.");
+    }
+
     private void toggleDataString(String data) {
         if (nbtDataStrings.contains(data))
             nbtDataStrings.remove(data);
@@ -115,6 +122,7 @@ public class AddAction {
 
         pl.getUtils().sendMessage(p, String.format(" %s", header));
         pl.getUtils().sendMessage(p, "&aSuccessfully added item config to the custom items.");
+        pl.getUtils().sendMessage(p, "&7Use: &b/bu reload&7 to update the plugin.");
         pl.getUtils().sendMessage(p, "&7Use: &b/bi list&7 to view all custom banned items.");
         pl.getUtils().sendMessage(p, "&7Any further configuration will need to be done manually");
         pl.getUtils().sendMessage(p, "&7via the config files.");
@@ -123,11 +131,18 @@ public class AddAction {
         deleteAction();
     }
 
+    private void selfDelete() {
+        // If an action is not completed, but rather the player just stops/leaves,
+        // this will ensure that the obj is still deleted and the memory freed.
+        int minutes = 10;
+        Bukkit.getScheduler().runTaskLater(pl, this::deleteAction, minutes * 60 * 20);
+    }
+
 
 
     public static void processActionCmd(CommandSender sender, String[] args) {
-        final AddAction action = getActionMap().getOrDefault(UUID.fromString(args[1]), null);
-        if (action == null) return;
+        final AddAction action = getActionMap().get(UUID.fromString(args[1]));
+        if (action == null) { sendActionExpiredErr(sender); return; }
         if (args[2].equals("INVALID")) { action.sendInvalidTargetErr(args); return; }
         if (args[2].equals("FINISH")) { action.completeAction(); return; }
 
