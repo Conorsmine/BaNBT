@@ -7,8 +7,8 @@ This addon is dependent on these plugins and will not run without them!
 - [ItemBan plugin](https://www.spigotmc.org/resources/banitem-1-7-1-19.67701/)
 
 ## Tasks
-- [ ] Add and ban custom items via command
-- [ ] UI for simplifying the task of banning custom items
+- [x] Add and ban custom items via command
+- [x] UI for simplifying the task of banning custom items
 - [x] Log players who violated the ItemBan plugin
 - [x] Allow the option for banning player if they pickup a specific item
 
