@@ -170,24 +170,6 @@ public final class Blacklist extends HashMap<World, Items> {
 
         if (Utils.isNullOrEmpty(data) || Arrays.stream(data).allMatch(blacklistData::contains)) {
 
-            // Log violations
-            if (pl.getBanConfig().getLogActions().contains(action))
-                pl.getViolationLog().addLogData(player, item.toItemStack(), action.getName());
-
-            // Checking bannable data?
-            if (dataMap.containsKey(BanDataType.BANNABLE)) {
-                if (((boolean) blacklistData.getData(BanDataType.BANNABLE))) {
-                    String banMsg = "§c§l[§e§lBanItem§c§l]§f Illegal item";
-                    player.getInventory().remove(item.toItemStack());
-                    Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), banMsg, null, banMsg);
-                    player.kickPlayer(banMsg);
-                    pl.getBanLog().addLogData(player, item.toItemStack());
-                    return true;
-                }
-
-                return false;
-            }
-
             // Checking creative data?
             if (dataMap.containsKey(BanDataType.GAMEMODE)) {
                 final Set<GameMode> set = blacklistData.getData(BanDataType.GAMEMODE);
@@ -244,6 +226,24 @@ public final class Blacklist extends HashMap<World, Items> {
                 final PlayerBanItemEvent e = new PlayerBanItemEvent(player, PlayerBanItemEvent.Type.BLACKLIST, item, action, blacklistData, data);
                 Bukkit.getPluginManager().callEvent(e);
                 if (e.isCancelled()) return false;
+            }
+
+            // Log violations
+            if (pl.getBanConfig().getLogActions().contains(action))
+                pl.getViolationLog().addLogData(player, item.toItemStack(), action.getName());
+
+            // Checking bannable data?
+            if (dataMap.containsKey(BanDataType.BANNABLE)) {
+                if (((boolean) blacklistData.getData(BanDataType.BANNABLE))) {
+                    String banMsg = "§c§l[§e§lBanItem§c§l]§f Illegal item";
+                    player.getInventory().remove(item.toItemStack());
+                    Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), banMsg, null, banMsg);
+                    player.kickPlayer(banMsg);
+                    pl.getBanLog().addLogData(player, item.toItemStack());
+                    return true;
+                }
+
+                return false;
             }
 
             // Checking delete?
