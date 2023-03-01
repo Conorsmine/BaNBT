@@ -137,7 +137,6 @@ public final class BanItem extends JavaPlugin {
                 banCommand.run();
                 return true;
             } catch (final Exception ignored) {
-                ignored.printStackTrace();
                 // We do not care!
             }
 
