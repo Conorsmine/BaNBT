@@ -34,6 +34,7 @@ public abstract class LogFiles {
         if (file.exists()) return file;
 
         try {
+            pl.getDataFolder().createNewFile();
             file.createNewFile();
             FileWriter writer = new FileWriter(file);
             writer.write("{}");
@@ -41,7 +42,7 @@ public abstract class LogFiles {
         } catch (IOException e) {
             e.printStackTrace();
             String errMsg = "§cCould not create log file at \"" + pl.getDataFolder().getAbsolutePath() + File.pathSeparator + fileName + "\"!";
-            pl.getUtils().sendMessage(pl.getServer().getConsoleSender(), errMsg);
+            pl.getServer().getConsoleSender().sendMessage(errMsg);
         }
 
         return file;

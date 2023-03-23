@@ -17,6 +17,10 @@
  */
 package fr.andross.banitem;
 
+import de.tr7zw.nbtapi.NBTCompoundList;
+import de.tr7zw.nbtapi.NBTEntity;
+import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTListCompound;
 import fr.andross.banitem.actions.BanAction;
 import fr.andross.banitem.actions.BanActionData;
 import fr.andross.banitem.actions.BanData;
@@ -30,6 +34,7 @@ import fr.andross.banitem.utils.debug.Debug;
 import fr.andross.banitem.utils.enchantments.EnchantmentWrapper;
 import fr.andross.banitem.utils.list.ListType;
 import fr.andross.banitem.utils.list.Listable;
+import fr.andross.banitem.utils.scanners.BaublesScanner;
 import fr.andross.banitem.utils.scanners.WearScanner;
 import fr.andross.banitem.utils.scanners.illegalstack.IllegalStackBlockType;
 import fr.andross.banitem.utils.scanners.illegalstack.IllegalStackScanner;
@@ -63,6 +68,7 @@ public final class BanUtils {
     private final BanItem pl;
     private final WearScanner wearScanner;
     private final IllegalStackScanner illegalStackScanner;
+    private final BaublesScanner baublesScanner;
     private final Map<String, String> commandsAliases = new HashMap<>();
     private final Map<UUID, Long> messagesCooldown = new HashMap<>();
     private final Set<UUID> logging = new HashSet<>();
@@ -71,9 +77,12 @@ public final class BanUtils {
         this.pl = pl;
         this.wearScanner = new WearScanner(pl, this);
         this.illegalStackScanner = new IllegalStackScanner(pl, this);
+        this.baublesScanner = new BaublesScanner(pl, this);
         commandsAliases.put("mi", "metaitem");
         commandsAliases.put("rl", "reload");
     }
+
+
 
     /**
      * Get a map of actions and actions data from a section
@@ -527,6 +536,37 @@ public final class BanUtils {
         else p.getInventory().setItem(freeSlot, item);
     }
 
+    public void checkPlayerBaubleStacks(@NotNull final Player p) {
+        final NBTEntity nbt = new NBTEntity(p);
+        if (!nbt.hasKey("ForgeCaps")) return;
+        if (!nbt.getCompound("ForgeCaps").hasKey("baubles:container")) return;
+
+        final NBTCompoundList compoundList = nbt.getCompound("ForgeCaps").getCompound("baubles:container").getCompoundList("Items");
+        final Map<Integer, ItemStack> baubleItems = new HashMap<>();
+        compoundList.forEach((n) -> {
+            final Integer slot = n.getInteger("Slot");
+            baubleItems.put(slot, NBTItem.convertNBTtoItem(n));
+        });
+        if (compoundList.size() == 0) return;
+
+        final Set<Integer> filteredBaubleSlots = removalMapIllegalBaubleItems(p, baubleItems);
+        if (filteredBaubleSlots.size() == 0) return;
+
+        compoundList.removeIf((n) -> filteredBaubleSlots.contains(n.getInteger("Slot")));
+    }
+
+    /**
+     * @param p Player wearing baubles
+     * @param baubleItems Currently held bauble items
+     * @return Set of baubles to be removed
+     */
+    private Set<Integer> removalMapIllegalBaubleItems(final Player p, final Map<Integer, ItemStack> baubleItems) {
+        final boolean primaryThread = Bukkit.isPrimaryThread();
+        return baubleItems.entrySet().stream()
+                .filter((e) -> pl.getApi().isBanned(p, p.getLocation(), e.getValue(), primaryThread, BanAction.WEAR))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+    }
 
     /**
      * Sending a prefixed and colored (if player) message to sender
@@ -563,6 +603,10 @@ public final class BanUtils {
     @NotNull
     public WearScanner getWearScanner() {
         return wearScanner;
+    }
+
+    public BaublesScanner getBaublesScanner() {
+        return baublesScanner;
     }
 
     /**

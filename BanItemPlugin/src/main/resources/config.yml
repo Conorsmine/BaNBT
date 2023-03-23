@@ -230,6 +230,7 @@ particle: # available only on bukkit 1.9+
 illegal-stacks:
   enabled: false
   vanilla-max-stack-size: true
+  bauble: false
   block-type: split
   #items:
   #  'diamond_helmet,iron_helmet':

@@ -36,7 +36,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <outputDirectory>C:\Users\Conor\Desktop\Desktop\Minecraft Stuff\1.12.2 mc server\plugins</outputDirectory>
+                            <outputDirectory>C:\Users\Conor\Desktop\Desktop\Minecraft Stuff\1.12.2 Magma\plugins</outputDirectory>
                             <finalName>BanItem-Extra-${project.parent.version}</finalName>
                             <relocations>
                                 <relocation>

@@ -85,6 +85,7 @@ public final class BanItem extends JavaPlugin {
         // Removing all tasks
         utils.getWearScanner().setEnabled(false);
         utils.getIllegalStackScanner().setEnabled(false);
+        utils.getBaublesScanner().setEnabled(false);
         getServer().getScheduler().cancelTasks(this);
 
         // (re)Loading config
@@ -101,6 +102,9 @@ public final class BanItem extends JavaPlugin {
 
         // (re)Loading illegal stack scanner
         utils.getIllegalStackScanner().load(sender, banConfig);
+
+        // (re)Loading bauble scanner
+        utils.getBaublesScanner().load(sender, banConfig);
 
         // Result
         final long end = System.currentTimeMillis();

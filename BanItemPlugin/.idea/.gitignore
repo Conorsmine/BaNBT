@@ -1,0 +1,23 @@
+# User-specific stuff
+.idea/
+
+*.iml
+*.ipr
+*.iws
+
+# IntelliJ
+out/
+target/
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Default ignored files
+/shelf/
+/workspace.xml
