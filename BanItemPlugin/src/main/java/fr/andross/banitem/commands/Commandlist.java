@@ -148,7 +148,7 @@ public class Commandlist extends BanCommand{
                 continue;
             }
 
-            String dataPath = String.format("tag.%s", path.replaceAll("#", "."));
+            String dataPath = String.format("tag#%s", path).replaceAll("--", ".");
             itemBuilder.addData(dataPath, data);
         }
 

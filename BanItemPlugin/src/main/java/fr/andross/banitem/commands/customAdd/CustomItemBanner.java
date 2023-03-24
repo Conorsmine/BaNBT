@@ -118,8 +118,8 @@ public class CustomItemBanner {
             MojangsonUtils.NBTResult result = MojangsonUtils.getCompoundFromPath(action.getItemNBT(), path);
             Object data = MojangsonUtils.getSimpleDataFromCompound(result);
 
-            if (MojangsonUtils.getFirstKey(path).equals("tag")) path = path.replaceFirst("tag\\.", "");
-            nbtData.put(path.replaceAll("\\.", "#"), data);
+            if (MojangsonUtils.getFirstKey(path).equals("tag")) path = path.replaceFirst("tag\\#", "");
+            nbtData.put(path.replaceAll("\\.", "--"), data);
         }
 
         return nbtData;

@@ -17,10 +17,10 @@
  */
 package fr.andross.banitem;
 
+import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTCompoundList;
 import de.tr7zw.nbtapi.NBTEntity;
 import de.tr7zw.nbtapi.NBTItem;
-import de.tr7zw.nbtapi.NBTListCompound;
 import fr.andross.banitem.actions.BanAction;
 import fr.andross.banitem.actions.BanActionData;
 import fr.andross.banitem.actions.BanData;
@@ -545,7 +545,7 @@ public final class BanUtils {
         final Map<Integer, ItemStack> baubleItems = new HashMap<>();
         compoundList.forEach((n) -> {
             final Integer slot = n.getInteger("Slot");
-            baubleItems.put(slot, NBTItem.convertNBTtoItem(n));
+            baubleItems.put(slot, NBTItem.convertNBTtoItem((NBTCompound) n));
         });
         if (compoundList.size() == 0) return;
 

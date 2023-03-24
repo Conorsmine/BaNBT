@@ -21,7 +21,9 @@ import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.NBTType;
 import fr.andross.banitem.utils.debug.Debug;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -62,11 +64,16 @@ public final class NBTAPI extends MetaTypeComparator {
             if (object == null) continue;
 
             // Preparing variables
-            final List<String> keys = Arrays.asList(keyNodes.split("#"));
+            final List<String> keys = Arrays.asList(keyNodes.replaceAll("--", ".").split("#"));
             final List<Object> expectedValues = new ArrayList<>();
 
+            // Configuration List
+            if (object instanceof List) {
+                expectedValues.addAll(((List<?>) object));
+            }
+
             // Multiple matches
-            if (object instanceof ConfigurationSection) {
+            else if (object instanceof ConfigurationSection) {
                 final ConfigurationSection keySection = (ConfigurationSection) object;
                 // Getting all objects
                 for (final String objectName : keySection.getKeys(false)) {

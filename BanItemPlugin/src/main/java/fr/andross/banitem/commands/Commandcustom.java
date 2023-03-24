@@ -32,7 +32,7 @@ public class Commandcustom extends BanCommand{
         if (!(sender instanceof Player)) { sendNonPlayerErr(); return; }
         Player p = ((Player) sender);
         ItemStack item = p.getInventory().getItemInMainHand();
-        if (item == null || item.getType() == Material.AIR) { sendNonItemErr(); return; }
+        if (item.getType() == Material.AIR) { sendNonItemErr(); return; }
         if (args.length < 2) { sendUsageMsg(); return; }
 
         if (AddAction.getActionMap().containsKey(p.getUniqueId())) sendLastActionCanceledMsg();

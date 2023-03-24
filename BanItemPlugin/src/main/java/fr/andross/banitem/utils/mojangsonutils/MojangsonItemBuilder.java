@@ -53,6 +53,8 @@ public class MojangsonItemBuilder {
 
     private void addCompounds(NBTCompound compound, String nbtPath, Object o) {
         String newPath = MojangsonUtils.removeLastKey(nbtPath);
+
+        if (o instanceof List) { List<?> l = ((List<?>) o); o = (l.isEmpty()) ? o : l.get(0); }
         if (StringUtils.isBlank(newPath)) { addDataToCompound(compound, nbtPath, o); return; }
 
         String[] compArr = MojangsonUtils.pathToKeys(newPath);

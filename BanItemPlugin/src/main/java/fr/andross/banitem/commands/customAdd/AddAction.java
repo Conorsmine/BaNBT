@@ -13,7 +13,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.*;
 
@@ -28,7 +27,7 @@ public class AddAction {
     private final String header;
 
     private final AddActionParser actionParser;
-    private final CustomItemBanner banCustomItemBuilder;
+    private final CustomItemBanner customItemBanner;
     private final Set<String> nbtDataStrings = new HashSet<>();
     private final NBTContainer itemNBT;
 
@@ -43,7 +42,7 @@ public class AddAction {
         this.header = cmdHeader;
         this.itemNBT = NBTItem.convertItemtoNBT(p.getInventory().getItemInMainHand());
         this.actionParser = new AddActionParser(this, args);
-        this.banCustomItemBuilder = new CustomItemBanner(this);
+        this.customItemBanner = new CustomItemBanner(this);
 
         actionMap.put(actionID, this);
         selfDelete();
@@ -118,7 +117,7 @@ public class AddAction {
     }
 
     private void completeAction() {
-        banCustomItemBuilder.addCustomBannedItem();
+        customItemBanner.addCustomBannedItem();
 
         pl.getUtils().sendMessage(p, String.format(" %s", header));
         pl.getUtils().sendMessage(p, "&aSuccessfully added item config to the custom items.");

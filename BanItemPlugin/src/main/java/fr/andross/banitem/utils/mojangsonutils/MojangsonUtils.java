@@ -4,9 +4,11 @@ import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTCompoundList;
 import de.tr7zw.nbtapi.NBTListCompound;
 import de.tr7zw.nbtapi.NBTType;
+import de.tr7zw.nbtapi.iface.ReadWriteNBT;
 import net.md_5.bungee.api.chat.*;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -58,7 +60,7 @@ public class MojangsonUtils {
         while (compoundIterator.hasNext()) {
             final String key = compoundIterator.next();
             final NBTType type = compound.getType(key);
-            final String newPath = (StringUtils.isBlank(path)) ? key : String.format("%s.%s", path, key);
+            final String newPath = (StringUtils.isBlank(path)) ? key : String.format("%s#%s", path, key);
             boolean shouldColor = isColoring(newPath);
 
             if (type == NBTType.NBTTagCompound)
@@ -100,10 +102,10 @@ public class MojangsonUtils {
         else if (clickable) pathDisplay.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(invalidClickTargetFormat, path)));
         prettyString.append(pathDisplay);
 
-        final Iterator<NBTListCompound> compoundListIterator = compound.getCompoundList(key).iterator();
+        final Iterator<ReadWriteNBT> compoundListIterator = compound.getCompoundList(key).iterator();
         int i = 0;
         while (compoundListIterator.hasNext()) {
-            final NBTListCompound readWriteNBT = compoundListIterator.next();
+            final NBTListCompound readWriteNBT = (NBTListCompound) compoundListIterator.next();
             String newArrPath = String.format("%s[%d]", path, i);
             boolean colorArrObj = isColoring(newArrPath);
 
@@ -131,7 +133,7 @@ public class MojangsonUtils {
 
         boolean isClickType = clickTypes.contains(compound.getType(key));
         final TextComponent pathDisplay = new TextComponent(evaluatedString);
-        String newPath = (StringUtils.isBlank(path)) ? key : String.format("%s.%s", path, key);
+        String newPath = (StringUtils.isBlank(path)) ? key : String.format("%s#%s", path, key);
         if (hoverable) pathDisplay.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(((isClickType) ? "§a" : "§c") + newPath).create()));
         if (clickable && isClickType) pathDisplay.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(cmdFormat, newPath)));
         else if (clickable) pathDisplay.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(invalidClickTargetFormat, newPath)));
@@ -196,7 +198,7 @@ public class MojangsonUtils {
         return new NBTResult(recursiveCompoundFromPath(compound, path), path, getLastKey(path));
     }
 
-    public static Object getSimpleDataFromCompound(final NBTResult nbtResult) {
+    public static Object getSimpleDataFromCompound(@NotNull final NBTResult nbtResult) {
         String key = nbtResult.getFinalKey();
         NBTType type = nbtResult.getCompound().getType(key);
         NBTCompound compound = nbtResult.getCompound();
@@ -261,30 +263,30 @@ public class MojangsonUtils {
         return simplePaths;
     }
 
-    // Items[0].tag.Items[..] -> {Items[0], tag, Items[..]}
+    // Items[0]#tag#Items[##] -> {Items[0], tag, Items[##]}
     public static String[] pathToKeys(final String path) {
-        return path.split("(?<!\\.)\\.(?!\\.)");
+        return path.split("(?<!#)#(?!#)");
     }
 
-    // Items[0].tag.Items[..] -> Items[..]
+    // Items[0]#tag#Items[##] -> Items[##]
     public static String getLastKey(final String path) {
-        return path.replaceAll(".+\\.(?=\\w)", "");
+        return path.replaceAll(".+#(?=\\w)", "");
     }
 
-    // Items[0].tag.Items[..] -> Items[0]
+    // Items[0]#tag#Items[##] -> Items[0]
     public static String getFirstKey(final String path) {
-        return path.replaceAll("\\.(?=\\w).+", "");
+        return path.replaceAll("#(?=\\w).+", "");
     }
 
-    // Items[0].tag.Items[..] -> tag.Items[..]
+    // Items[0]#tag#Items[##] -> tag#Items[##]
     public static String removeFirstKey(final String path) {
-        String[] out = path.split("\\.(?=\\w)", 2);
+        String[] out = path.split("#(?=\\w)", 2);
         return (out.length >= 2) ? out[1] : "";
     }
 
-    // Items[0].tag.Items[..] -> Items[0].tag
+    // Items[0]#tag#Items[##] -> Items[0]#tag
     public static String removeLastKey(final String path) {
-        String out = path.replaceAll("\\.\\w(?!.*\\.\\w).*", "");
+        String out = path.replaceAll("#\\w(?!.*#\\w).*", "");
         return (out.length() == path.length()) ? "" : out;
     }
 
@@ -294,14 +296,14 @@ public class MojangsonUtils {
         return key.charAt(key.length() - 1) == ']';
     }
 
-    // Items[..] -> true    Items[0] -> false
+    // Items[##] -> true    Items[0] -> false
     public static boolean isFullArray(final String key) {
-        return key.matches(".+\\.]$");
+        return key.matches(".+#]$");
     }
 
     // Items[0] -> Items
     public static String getArrayKeyValue(final String key) {
-        return key.replaceAll("\\[\\d*]$", "").replaceAll("\\[\\.{2}]$", "");
+        return key.replaceAll("\\[\\d*]$", "").replaceAll("\\[#{2}]$", "");
     }
 
     // Items[0] -> 0
@@ -309,9 +311,9 @@ public class MojangsonUtils {
         return Integer.parseInt(key.replaceAll(".+\\[|]$", ""));
     }
 
-    // Items[..] -> Items   tag.ench[0].custom[..] -> tag.ench[].custom[]
+    // Items[##] -> Items   tag#ench[0]#custom[##] -> tag#ench[]#custom[]
     public static String removeArrIndexes(final String key) {
-        return key.replaceAll("\\[((\\d+)|(\\.\\.))]", "[]");
+        return key.replaceAll("\\[((\\d+)|(##))]", "[]");
     }
 
     private static NBTCompound recursiveCompoundFromPath(final NBTCompound compound, final String path) {
@@ -333,7 +335,7 @@ public class MojangsonUtils {
     private static Set<String> pathRecursion(NBTCompound compound, Set<String> paths, String currentPath) {
         for (String key : compound.getKeys()) {
             final NBTType type = compound.getType(key);
-            final String newPath = (StringUtils.isBlank(currentPath)) ? key : String.format("%s.%s", currentPath, key);
+            final String newPath = (StringUtils.isBlank(currentPath)) ? key : String.format("%s#%s", currentPath, key);
             paths.add(newPath);
             if (!(type == NBTType.NBTTagCompound || type == NBTType.NBTTagList)) continue;
 
